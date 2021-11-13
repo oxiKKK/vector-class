@@ -1,2 +1,2 @@
 # vector-class
-A simple vector3d &amp; vector2D class
+A simple vector3D &amp; vector2D class
