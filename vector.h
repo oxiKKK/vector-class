@@ -859,8 +859,6 @@ template <typename T> CONSTEXPR inline vector_2d<T> operator*(T fl, const vector
 	return v * fl;
 };
 
-#define vec3_t vector_3d<float>
-
 using Vector = vector_3d<float>;
 using Vector2D = vector_2d<float>;
 
