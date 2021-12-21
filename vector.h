@@ -3,61 +3,72 @@
 
 #pragma once
 
+//	C++17 constexpr support:
 #if __cpp_constexpr >= 201907L
-#define CONSTEXPR constexpr
+#	define CONSTEXPR constexpr
 #else
-#define CONSTEXPR
+#	define CONSTEXPR
 #endif
 
-template <typename T>
+//	C++20 concept support:
+#ifndef __cpp_lib_concepts
+#	include <concepts>
+#	ifdef __cpp_lib_concepts
+#		if __cpp_lib_concepts >= 201907L
+			template <typename T>
+			concept ValidVecType = std::is_arithmetic<T>::value;
+#		else
+#			define ValidVecType typename
+#		endif
+#	endif
+#endif
+
+template <ValidVecType T>
 class vector_3d
 {
 public:
-	/*
-	*	constructor / destructor
-	**/
-	CONSTEXPR vector_3d() : x(0.0), y(0.0), z(0.0) {}
-	CONSTEXPR ~vector_3d() {}
-	CONSTEXPR vector_3d(T X, T Y, T Z) : x(X), y(Y), z(Z) {}
-	CONSTEXPR vector_3d(T* p) { *this = p; };
-	CONSTEXPR vector_3d(const vector_3d& in) : x(in.x), y(in.y), z(in.z) {}
+	/***	Construction
+	**************************************************************/
+	CONSTEXPR vector_3d() noexcept : x( 0.0 ), y( 0.0 ), z( 0.0 ) {}
+	CONSTEXPR ~vector_3d() noexcept {}
+	CONSTEXPR vector_3d( T X, T Y, T Z ) noexcept : x( X ), y( Y ), z( Z ) {}
+	CONSTEXPR vector_3d( T* p ) noexcept { *this = p; };
+	CONSTEXPR vector_3d( const vector_3d& in ) noexcept : x( in.x ), y( in.y ), z( in.z ) {}
 
-	/*
-	*	operator =
-	**/
-	CONSTEXPR inline auto& operator=(const vector_3d& in)
+	/***	Operator=
+	**************************************************************/
+	CONSTEXPR inline auto& operator=( const vector_3d& other ) noexcept
 	{
-		x = in.x;
-		y = in.y;
-		z = in.z;
+		x = other.x;
+		y = other.y;
+		z = other.z;
 
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator=(T* p)
+	CONSTEXPR inline auto& operator=( T* p ) noexcept
 	{
 		if (p)
 		{
 			x = p[0];
 			y = p[1];
 			z = p[2];
-		} 		else
+		} else
 			x = y = z = 0.0;
 
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator=(T f)
+	CONSTEXPR inline auto& operator=( T f ) noexcept
 	{
 		x = y = z = f;
 
 		return *this;
 	}
 
-	/*
-	 *	operator +=
-	**/
-	CONSTEXPR inline auto& operator+=(const vector_3d& other)
+	/***	Operator+=
+	**************************************************************/
+	CONSTEXPR inline auto& operator+=( const vector_3d& other ) noexcept
 	{
 		x += other.x;
 		y += other.y;
@@ -66,7 +77,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator+=(T* p)
+	CONSTEXPR inline auto& operator+=( T* p ) noexcept
 	{
 		x += p[0];
 		y += p[1];
@@ -75,7 +86,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator+=(T f)
+	CONSTEXPR inline auto& operator+=( T f ) noexcept
 	{
 		x += f;
 		y += f;
@@ -84,10 +95,9 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator -=
-	**/
-	CONSTEXPR inline auto& operator-=(const vector_3d& other)
+	/***	Operator-=
+	**************************************************************/
+	CONSTEXPR inline auto& operator-=( const vector_3d& other ) noexcept
 	{
 		x -= other.x;
 		y -= other.y;
@@ -96,7 +106,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator-=(T* p)
+	CONSTEXPR inline auto& operator-=( T* p ) noexcept
 	{
 		x -= p[0];
 		y -= p[1];
@@ -105,7 +115,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator-=(T f)
+	CONSTEXPR inline auto& operator-=( T f ) noexcept
 	{
 		x -= f;
 		y -= f;
@@ -114,10 +124,9 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator *=
-	**/
-	CONSTEXPR inline auto& operator*=(const vector_3d& other)
+	/***	Operator*=
+	**************************************************************/
+	CONSTEXPR inline auto& operator*=( const vector_3d& other ) noexcept
 	{
 		x *= other.x;
 		y *= other.y;
@@ -126,7 +135,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator*=(T* p)
+	CONSTEXPR inline auto& operator*=( T* p ) noexcept
 	{
 		x *= p[0];
 		y *= p[1];
@@ -135,7 +144,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator*=(T f)
+	CONSTEXPR inline auto& operator*=( T f ) noexcept
 	{
 		x *= f;
 		y *= f;
@@ -144,10 +153,9 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator /=
-	**/
-	CONSTEXPR inline auto& operator/=(const vector_3d& other)
+	/***	Operator/=
+	**************************************************************/
+	CONSTEXPR inline auto& operator/=( const vector_3d& other ) noexcept
 	{
 		if (other.x != 0.0 && other.y != 0.0 && other.z != 0.0)
 		{
@@ -159,7 +167,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator/=(T* p)
+	CONSTEXPR inline auto& operator/=( T* p ) noexcept
 	{
 		if (p[0] != 0.0 && p[1] != 0.0 && p[2] != 0.0)
 		{
@@ -171,7 +179,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator/=(T f)
+	CONSTEXPR inline auto& operator/=( T f ) noexcept
 	{
 		if (f != 0.0)
 		{
@@ -183,96 +191,91 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator +=
-	**/
-	CONSTEXPR inline auto operator+(const vector_3d& other) const
+	/***	Operator+
+	**************************************************************/
+	CONSTEXPR inline auto operator+( const vector_3d& other ) const noexcept
 	{
-		return vector_3d(x + other.x, y + other.y, z + other.z);
+		return vector_3d( x + other.x, y + other.y, z + other.z );
 	}
 
-	CONSTEXPR inline auto operator+(T* p) const
+	CONSTEXPR inline auto operator+( T* p ) const noexcept
 	{
-		return vector_3d(x + p[0], y + p[1], z + p[2]);
+		return vector_3d( x + p[0], y + p[1], z + p[2] );
 	}
 
-	CONSTEXPR inline auto operator+(T f) const
+	CONSTEXPR inline auto operator+( T f ) const noexcept
 	{
-		return vector_3d(x + f, y + f, z + f);
+		return vector_3d( x + f, y + f, z + f );
 	}
 
-	/*
-	 *	operator -
-	**/
-	CONSTEXPR inline auto operator-(const vector_3d& other) const
+	/***	Operator-
+	**************************************************************/
+	CONSTEXPR inline auto operator-( const vector_3d& other ) const noexcept
 	{
-		return vector_3d(x - other.x, y - other.y, z - other.z);
+		return vector_3d( x - other.x, y - other.y, z - other.z );
 	}
 
-	CONSTEXPR inline auto operator-(T* p) const
+	CONSTEXPR inline auto operator-( T* p ) const noexcept
 	{
-		return vector_3d(x - p[0], y - p[1], z - p[2]);
+		return vector_3d( x - p[0], y - p[1], z - p[2] );
 	}
 
-	CONSTEXPR inline auto operator-(T f) const
+	CONSTEXPR inline auto operator-( T f ) const noexcept
 	{
-		return vector_3d(x - f, y - f, z - f);
+		return vector_3d( x - f, y - f, z - f );
 	}
 
-	CONSTEXPR inline auto operator-() const
+	CONSTEXPR inline auto operator-() const noexcept
 	{
-		return vector_3d(-x, -y, -z);
+		return vector_3d( -x, -y, -z );
 	}
 
-	/*
-	 *	operator *
-	**/
-	CONSTEXPR inline auto operator*(const vector_3d& other) const
+	/***	Operator*
+	**************************************************************/
+	CONSTEXPR inline auto operator*( const vector_3d& other ) const noexcept
 	{
-		return vector_3d(x * other.x, y * other.y, z * other.z);
+		return vector_3d( x * other.x, y * other.y, z * other.z );
 	}
 
-	CONSTEXPR inline auto operator*(T* p) const
+	CONSTEXPR inline auto operator*( T* p ) const noexcept
 	{
-		return vector_3d(x * p[0], y * p[1], z * p[2]);
+		return vector_3d( x * p[0], y * p[1], z * p[2] );
 	}
 
-	CONSTEXPR inline auto operator*(T f) const
+	CONSTEXPR inline auto operator*( T f ) const noexcept
 	{
-		return vector_3d(x * f, y * f, z * f);
+		return vector_3d( x * f, y * f, z * f );
 	}
 
-	/*
-	 *	operator /
-	**/
-	CONSTEXPR inline auto operator/(const vector_3d& other) const
+	/***	Operator/
+	**************************************************************/
+	CONSTEXPR inline auto operator/( const vector_3d& other ) const noexcept
 	{
 		if (other.x != 0.0 && other.y != 0.0 && other.z != 0.0)
-			return vector_3d(x / other.x, y / other.y, z / other.z);
+			return vector_3d( x / other.x, y / other.y, z / other.z );
 
 		return *this;
 	}
 
-	CONSTEXPR inline auto operator/(T* p) const
+	CONSTEXPR inline auto operator/( T* p ) const noexcept
 	{
 		if (p[0] != 0.0 && p[1] != 0.0 && p[2] != 0.0)
-			return vector_3d(x / p[0], y / p[1], z / p[2]);
+			return vector_3d( x / p[0], y / p[1], z / p[2] );
 
 		return *this;
 	}
 
-	CONSTEXPR inline auto operator/(T f) const
+	CONSTEXPR inline auto operator/( T f ) const noexcept
 	{
 		if (f != 0.0)
-			return vector_3d(x / f, y / f, z / f);
+			return vector_3d( x / f, y / f, z / f );
 
 		return *this;
 	}
 
-	/*
-	*	array access
-	**/
-	CONSTEXPR inline auto& operator[](uint32_t i) const
+	/***	Operator[]
+	**************************************************************/
+	CONSTEXPR inline auto& operator[]( uint32_t i ) const noexcept
 	{
 		if (i >= 0 && i < 3)
 			return ((T*)this)[i];
@@ -280,62 +283,54 @@ public:
 		return ((T*)this)[0];
 	}
 
-	/*
-	*	boolean operators
-	**/
-	CONSTEXPR inline bool operator!() const
+	/***	Boolean operators
+	**************************************************************/
+	CONSTEXPR inline bool operator!() const noexcept
 	{
 		return IsZero();
 	}
 
-	CONSTEXPR inline bool operator==(const vector_3d& other) const
+	CONSTEXPR inline bool operator==( const vector_3d& other ) const noexcept
 	{
 		return x == other.x && y == other.y && z == other.z;
 	}
 
-	CONSTEXPR inline bool operator!=(const vector_3d& other) const
+	CONSTEXPR inline bool operator!=( const vector_3d& other ) const noexcept
 	{
 		return x != other.x || y != other.y || z != other.z;
 	}
 
-	/*
-	 *	return itself
-	**/
-	CONSTEXPR inline operator auto()
+	/***	Other operators
+	**************************************************************/
+	CONSTEXPR inline operator auto() noexcept
 	{
 		return &x;
 	}
-	CONSTEXPR inline operator const auto() const
+	CONSTEXPR inline operator const auto() const noexcept
 	{
 		return &x;
 	}
 
-	/*
-	 *	Constexpr helper members
-	**/
-	CONSTEXPR inline bool IsZero() const
+	/***	Helper constexpr functions
+	**************************************************************/
+	CONSTEXPR inline bool IsZero() const noexcept
 	{
 		return x == 0.0 && y == 0.0 && z == 0.0;
 	}
 
-	CONSTEXPR inline bool IsZero2D() const
+	CONSTEXPR inline bool IsZero2D() const noexcept
 	{
 		return x == 0.0 && y == 0.0;
 	}
 
-	inline bool IsValid() const
-	{
-		return isfinite(x) && isfinite(y) && isfinite(z);
-	}
-
-	CONSTEXPR inline auto& Clear()
+	CONSTEXPR inline auto& Clear() noexcept
 	{
 		x = y = z = 0.0;
 
 		return *this;
 	}
 
-	CONSTEXPR inline auto& Negate()
+	CONSTEXPR inline auto& Negate() noexcept
 	{
 		x = -x;
 		y = -y;
@@ -344,12 +339,12 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto Dot(const vector_3d& other) const noexcept
+	CONSTEXPR inline auto Dot( const vector_3d& other ) const noexcept
 	{
 		return x * other.x + y * other.y + z * other.z;
 	}
 
-	CONSTEXPR inline auto Dot2D(const vector_3d& other) const noexcept
+	CONSTEXPR inline auto Dot2D( const vector_3d& other ) const noexcept
 	{
 		return x * other.x + y * other.y;
 	}
@@ -364,7 +359,7 @@ public:
 		return x * x + y * y;
 	}
 
-	inline CONSTEXPR auto& CrossProduct(const vector_3d& a, const vector_3d& b)
+	CONSTEXPR inline auto& CrossProduct( const vector_3d& a, const vector_3d& b ) noexcept
 	{
 		x = (a.y * b.z) - (a.z * b.y);
 		y = (a.z * b.x) - (a.x * b.z);
@@ -373,25 +368,29 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	Non-CONSTEXPR helper members
-	**/
+	/***	Helper runtime functions
+	**************************************************************/
+	inline bool IsValid() const noexcept
+	{
+		return isfinite( x ) && isfinite( y ) && isfinite( z );
+	}
+
 	inline auto Length() const noexcept
 	{
-		return (T)std::sqrt(LengthSqr());
+		return (T)std::sqrt( LengthSqr() );
 	}
 
 	inline auto Length2D() const noexcept
 	{
-		return (T)std::sqrt(LengthSqr2D());
+		return (T)std::sqrt( LengthSqr2D() );
 	}
 
-	inline auto Distance(const vector_3d& ToVector) const noexcept
+	inline auto Distance( const vector_3d& ToVector ) const noexcept
 	{
 		return (ToVector - *this).Length();
 	}
 
-	inline auto Distance2D(vector_3d& ToVector) const noexcept
+	inline auto Distance2D( vector_3d& ToVector ) const noexcept
 	{
 		return (ToVector - *this).Length2D();
 	}
@@ -401,13 +400,13 @@ public:
 		T flLen = Length();
 
 		if (flLen == 0.0)
-			return vector_3d(0.0, 0.0, 1.0);
+			return vector_3d( 0.0, 0.0, 1.0 );
 
 		flLen = 1.0 / flLen;
-		return vector_3d(x * flLen, y * flLen, z * flLen);
+		return vector_3d( x * flLen, y * flLen, z * flLen );
 	}
 
-	inline auto Normalize()
+	inline auto Normalize() noexcept
 	{
 		T RecipLength, VectorLength;
 
@@ -425,7 +424,7 @@ public:
 		return VectorLength;
 	}
 
-	inline auto Normalize2D()
+	inline auto Normalize2D() noexcept
 	{
 		T Length = LengthSqr2D();
 		T RecipLength;
@@ -441,28 +440,28 @@ public:
 		return Length;
 	}
 
-	inline auto AngleBetween(vector_3d& other) const noexcept
+	inline auto AngleBetween( vector_3d& other ) const noexcept
 	{
 		other.Normalize();
 		Normalize();
 
-		return (T)std::acos(Dot(other)) * static_cast<T>(180.0 / 3.14159265358979323846);
+		return (T)std::acos( Dot( other ) ) * static_cast<T>(180.0 / 3.14159265358979323846);
 	}
 
-	inline void VectorVectors(vector_3d& Right, vector_3d& Up) const
+	inline void VectorVectors( vector_3d& Right, vector_3d& Up ) const noexcept
 	{
 		if (IsZero2D())
 		{
 			Right = { 1.0 };
 			Right = { -z, 0.0, 0.0 };
-		} 		else
+		} else
 		{
 			vector_3d tmp = {};
-			CrossProduct(tmp, Right);
+			CrossProduct( tmp, Right );
 
 			Right.Normalize();
 
-			Right.CrossProduct(*this, Up);
+			Right.CrossProduct( *this, Up );
 
 			Up.Normalize();
 		}
@@ -472,36 +471,34 @@ public:
 	T x, y, z;
 };
 
-template <typename T> CONSTEXPR inline vector_3d<T> operator*(T fl, const vector_3d<T>& v) 
-{ 
-	return v * fl; 
+template <ValidVecType T> CONSTEXPR inline vector_3d<T> operator*( T fl, const vector_3d<T>& v )
+{
+	return v * fl;
 };
 
-template <typename T>
+template <ValidVecType T>
 class vector_2d
 {
 public:
-	/*
-	*	constructor / destructor
-	**/
-	CONSTEXPR vector_2d() : x(0.0), y(0.0) {}
-	CONSTEXPR ~vector_2d() {}
-	CONSTEXPR vector_2d(T X, T Y) : x(X), y(Y) {}
-	CONSTEXPR vector_2d(T* p) { *this = p; };
-	CONSTEXPR vector_2d(const vector_2d& in) : x(in.x), y(in.y) {}
+	/***	Construction
+	**************************************************************/
+	CONSTEXPR vector_2d() noexcept : x(0.0), y(0.0) {}
+	CONSTEXPR ~vector_2d() noexcept {}
+	CONSTEXPR vector_2d(T X, T Y) noexcept : x(X), y(Y) {}
+	CONSTEXPR vector_2d(T* p) noexcept { *this = p; };
+	CONSTEXPR vector_2d(const vector_2d& in) noexcept : x(in.x), y(in.y) {}
 
-	/*
-	*	operator =
-	**/
-	CONSTEXPR inline auto& operator=(const vector_2d& in)
+	/***	Operator=
+	**************************************************************/
+	CONSTEXPR inline auto& operator=(const vector_2d& other) noexcept
 	{
-		x = in.x;
-		y = in.y;
+		x = other.x;
+		y = other.y;
 
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator=(T* p)
+	CONSTEXPR inline auto& operator=(T* p) noexcept
 	{
 		if (p)
 		{
@@ -513,17 +510,16 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator=(T f)
+	CONSTEXPR inline auto& operator=(T f) noexcept
 	{
 		x = y = f;
 
 		return *this;
 	}
 
-	/*
-	 *	operator +=
-	**/
-	CONSTEXPR inline auto& operator+=(const vector_2d& other)
+	/***	Operator+=
+	**************************************************************/
+	CONSTEXPR inline auto& operator+=(const vector_2d& other) noexcept
 	{
 		x += other.x;
 		y += other.y;
@@ -531,7 +527,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator+=(T* p)
+	CONSTEXPR inline auto& operator+=(T* p) noexcept
 	{
 		x += p[0];
 		y += p[1];
@@ -539,7 +535,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator+=(T f)
+	CONSTEXPR inline auto& operator+=(T f) noexcept
 	{
 		x += f;
 		y += f;
@@ -547,10 +543,9 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator -=
-	**/
-	CONSTEXPR inline auto& operator-=(const vector_2d& other)
+	/***	Operator-=
+	**************************************************************/
+	CONSTEXPR inline auto& operator-=(const vector_2d& other) noexcept
 	{
 		x -= other.x;
 		y -= other.y;
@@ -558,7 +553,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator-=(T* p)
+	CONSTEXPR inline auto& operator-=(T* p) noexcept
 	{
 		x -= p[0];
 		y -= p[1];
@@ -566,7 +561,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator-=(T f)
+	CONSTEXPR inline auto& operator-=(T f) noexcept
 	{
 		x -= f;
 		y -= f;
@@ -574,10 +569,9 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator *=
-	**/
-	CONSTEXPR inline auto& operator*=(const vector_2d& other)
+	/***	Operator*=
+	**************************************************************/
+	CONSTEXPR inline auto& operator*=(const vector_2d& other) noexcept
 	{
 		x *= other.x;
 		y *= other.y;
@@ -585,7 +579,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator*=(T* p)
+	CONSTEXPR inline auto& operator*=(T* p) noexcept
 	{
 		x *= p[0];
 		y *= p[1];
@@ -593,7 +587,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator*=(T f)
+	CONSTEXPR inline auto& operator*=(T f) noexcept
 	{
 		x *= f;
 		y *= f;
@@ -601,10 +595,9 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator /=
-	**/
-	CONSTEXPR inline auto& operator/=(const vector_2d& other)
+	/***	Operator/=
+	**************************************************************/
+	CONSTEXPR inline auto& operator/=(const vector_2d& other) noexcept
 	{
 		if (other.x != 0.0 && other.y != 0.0)
 		{
@@ -615,7 +608,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator/=(T* p)
+	CONSTEXPR inline auto& operator/=(T* p) noexcept
 	{
 		if (p[0] != 0.0 && p[1] != 0.0)
 		{
@@ -626,7 +619,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto& operator/=(T f)
+	CONSTEXPR inline auto& operator/=(T f) noexcept
 	{
 		if (f != 0.0)
 		{
@@ -637,69 +630,65 @@ public:
 		return *this;
 	}
 
-	/*
-	 *	operator +=
-	**/
-	CONSTEXPR inline auto operator+(const vector_2d& other) const
+	/***	Operator+
+	**************************************************************/
+	CONSTEXPR inline auto operator+(const vector_2d& other) const noexcept
 	{
 		return vector_2d(x + other.x, y + other.y);
 	}
 
-	CONSTEXPR inline auto operator+(T* p) const
+	CONSTEXPR inline auto operator+(T* p) const noexcept
 	{
 		return vector_2d(x + p[0], y + p[1]);
 	}
 
-	CONSTEXPR inline auto operator+(T f) const
+	CONSTEXPR inline auto operator+(T f) const noexcept
 	{
 		return vector_2d(x + f, y + f);
 	}
 
-	/*
-	 *	operator -
-	**/
-	CONSTEXPR inline auto operator-(const vector_2d& other) const
+	/***	Operator-
+	**************************************************************/
+	CONSTEXPR inline auto operator-(const vector_2d& other) const noexcept
 	{
 		return vector_2d(x - other.x, y - other.y);
 	}
 
-	CONSTEXPR inline auto operator-(T* p) const
+	CONSTEXPR inline auto operator-(T* p) const noexcept
 	{
 		return vector_2d(x - p[0], y - p[1]);
 	}
 
-	CONSTEXPR inline auto operator-(T f) const
+	CONSTEXPR inline auto operator-(T f) const noexcept
 	{
 		return vector_2d(x - f, y - f);
 	}
 
-	CONSTEXPR inline auto operator-() const
+	CONSTEXPR inline auto operator-() const noexcept
 	{
 		return vector_2d(-x, -y);
 	}
 
-	/*
-	 *	operator *
-	**/
-	CONSTEXPR inline auto operator*(const vector_2d& other) const
+	/***	Operator*
+	**************************************************************/
+	CONSTEXPR inline auto operator*(const vector_2d& other) const noexcept
 	{
 		return vector_2d(x * other.x, y * other.y);
 	}
 
-	CONSTEXPR inline auto operator*(T* p) const
+	CONSTEXPR inline auto operator*(T* p) const noexcept
 	{
 		return vector_2d(x * p[0], y * p[1]);
 	}
 
-	CONSTEXPR inline auto operator*(T f) const
+	CONSTEXPR inline auto operator*(T f) const noexcept
 	{
 		return vector_2d(x * f, y * f);
 	}
 
-	/*
-	 *	operator /
-	**/
-	CONSTEXPR inline auto operator/(const vector_2d& other) const
+	/***	Operator/
+	**************************************************************/
+	CONSTEXPR inline auto operator/(const vector_2d& other) const noexcept
 	{
 		if (other.x != 0.0 && other.y != 0.0)
 			return vector_2d(x / other.x, y / other.y);
@@ -707,7 +696,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto operator/(T* p) const
+	CONSTEXPR inline auto operator/(T* p) const noexcept
 	{
 		if (p[0] != 0.0 && p[1] != 0.0)
 			return vector_2d(x / p[0], y / p[1]);
@@ -715,7 +704,7 @@ public:
 		return *this;
 	}
 
-	CONSTEXPR inline auto operator/(T f) const
+	CONSTEXPR inline auto operator/(T f) const noexcept
 	{
 		if (f != 0.0)
 			return vector_2d(x / f, y / f);
@@ -723,10 +712,9 @@ public:
 		return *this;
 	}
 
-	/*
-*	array access
-**/
-	CONSTEXPR inline auto& operator[](uint32_t i) const
+	/***	Operator[]
+	**************************************************************/
+	CONSTEXPR inline auto& operator[](uint32_t i) const noexcept
 	{
 		if (i >= 0 && i < 2)
 			return ((T*)this)[i];
@@ -734,57 +722,49 @@ public:
 		return ((T*)this)[0];
 	}
 
-	/*
-	*	boolean operators
-	**/
-	CONSTEXPR inline bool operator!() const
+	/***	Boolean operators
+	**************************************************************/
+	CONSTEXPR inline bool operator!() const noexcept
 	{
 		return IsZero();
 	}
 
-	CONSTEXPR inline bool operator==(const vector_2d& other) const
+	CONSTEXPR inline bool operator==(const vector_2d& other) const noexcept
 	{
 		return x == other.x && y == other.y;
 	}
 
-	CONSTEXPR inline bool operator!=(const vector_2d& other) const
+	CONSTEXPR inline bool operator!=(const vector_2d& other) const noexcept
 	{
 		return x != other.x || y != other.y;
 	}
 
-	/*
-	 *	return itself
-	**/
-	CONSTEXPR inline operator auto()
+	/***	Other operators
+	**************************************************************/
+	CONSTEXPR inline operator auto() noexcept
 	{
 		return &x;
 	}
-	CONSTEXPR inline operator const auto() const
+	CONSTEXPR inline operator const auto() const noexcept
 	{
 		return &x;
 	}
 
-	/*
-	 *	Constexpr helper members
-	**/
-	CONSTEXPR inline bool IsZero() const
+	/***	Helper constexpr functions
+	**************************************************************/
+	CONSTEXPR inline bool IsZero() const noexcept
 	{
 		return x == 0.0 && y == 0.0;
 	}
 
-	inline bool IsValid() const
-	{
-		return isfinite(x) && isfinite(y);
-	}
-
-	CONSTEXPR inline auto& Clear()
+	CONSTEXPR inline auto& Clear() noexcept
 	{
 		x = y = 0.0;
 
 		return *this;
 	}
 
-	CONSTEXPR inline auto& Negate()
+	CONSTEXPR inline auto& Negate() noexcept
 	{
 		x = -x;
 		y = -y;
@@ -802,9 +782,13 @@ public:
 		return x * x + y * y;
 	}
 
-	/*
-	 *	Non-CONSTEXPR helper members
-	**/
+	/***	Helper non-constexpr functions
+	**************************************************************/
+	inline bool IsValid() const noexcept
+	{
+		return isfinite(x) && isfinite(y);
+	}
+
 	inline auto Length() const noexcept
 	{
 		return (T)std::sqrt(LengthSqr());
@@ -826,7 +810,7 @@ public:
 		return vector_2d(x * flLen, y * flLen);
 	}
 
-	inline auto Normalize()
+	inline auto Normalize() noexcept
 	{
 		T Length = LengthSqr();
 		T RecipLength;
@@ -854,7 +838,7 @@ public:
 	T x, y;
 };
 
-template <typename T> CONSTEXPR inline vector_2d<T> operator*(T fl, const vector_2d<T>& v)
+template <ValidVecType T> CONSTEXPR inline vector_2d<T> operator*(T fl, const vector_2d<T>& v)
 {
 	return v * fl;
 };
