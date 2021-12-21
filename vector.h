@@ -13,13 +13,14 @@
 //	C++20 concept support:
 #ifndef __cpp_lib_concepts
 #	include <concepts>
-#	ifdef __cpp_lib_concepts
-#		if __cpp_lib_concepts >= 201907L
-			template <typename T>
-			concept ValidVecType = std::is_arithmetic<T>::value;
-#		else
-#			define ValidVecType typename
-#		endif
+#endif
+
+#ifdef __cpp_lib_concepts
+#	if __cpp_lib_concepts >= 201907L
+		template <typename T>
+		concept ValidVecType = std::is_arithmetic<T>::value;
+#	else
+#		define ValidVecType typename
 #	endif
 #endif
 
