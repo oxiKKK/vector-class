@@ -14,8 +14,8 @@ A simple class which takes care of simple 3D&2D Vector math.
 
 # How to use
 - There are two predefined types: 
-  - `Vector` being vector_3d<float>
-  - `Vector2D` being vector_2d<float>
+  - `Vector` being vector_3d< float >
+  - `Vector2D` being vector_2d< float >
 
 # Example
 ```c++
