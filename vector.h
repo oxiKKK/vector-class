@@ -15,7 +15,7 @@
 #	include <concepts>
 #endif
 
-#ifdef __cpp_lib_concepts && __cpp_lib_concepts >= 201907L
+#ifdef __cpp_lib_concepts >= 201907L
 	template <typename T>
 	concept ValidVecType = std::is_arithmetic<T>::value;
 #else
