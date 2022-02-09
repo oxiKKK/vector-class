@@ -9,7 +9,7 @@ A simple class which takes care of simple 3D&2D Vector math.
   - `Dot`, `CrossProduct`, `Normalize`
   - `Length`, `Distance`
   - etc...
-- All members possible all `constexpr`.
+- All members possible are `constexpr`.
 - `c++20 concepts` are used for type safety.
 
 # How to use
