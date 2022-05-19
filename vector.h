@@ -738,6 +738,16 @@ public:
 		return x != other.x || y != other.y;
 	}
 
+	CONSTEXPR inline bool operator<(const vector_3d& other) const noexcept
+	{
+		return x < other.x && y < other.y && z < other.z;
+	}
+
+	CONSTEXPR inline bool operator>(const vector_3d& other) const noexcept
+	{
+		return x > other.x && y > other.y && z > other.z;
+	}
+
 	/***	Other operators
 	**************************************************************/
 	CONSTEXPR inline operator auto() noexcept
