@@ -2,6 +2,19 @@
   "files.associations": {
     "*.ejs": "html",
     "cmath": "cpp",
-    "xtr1common": "cpp"
+    "xtr1common": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "cstddef": "cpp",
+    "cstdint": "cpp",
+    "cstdio": "cpp",
+    "cstdlib": "cpp",
+    "cstring": "cpp",
+    "cwchar": "cpp",
+    "initializer_list": "cpp",
+    "limits": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "xutility": "cpp"
   }
 }

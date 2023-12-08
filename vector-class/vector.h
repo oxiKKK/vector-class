@@ -1127,10 +1127,13 @@ constexpr inline vector_3d<T> operator*(float p, const vector_3d<T>& v)
 // type declarations
 //
 
-template<typename T = float> requires(std::is_integral_v<T>)
+template<typename T>
+concept VectorType = std::is_integral_v<T> || std::is_floating_point_v<T>;
+
+template<VectorType T = float>
 using Vector2D = detail::vector_2d<T>;
 
-template<typename T = float> requires(std::is_integral_v<T>)
+template<VectorType T = float>
 using Vector = detail::vector_3d<T>;
 
 #endif // VECTOR_CLASS_H
