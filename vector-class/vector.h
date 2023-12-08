@@ -326,12 +326,6 @@ public:
 		return vector_2d(x * f, y * f);
 	}
 
-	// for vec * float
-	constexpr inline auto operator*(float p, const vector_2d& v)
-	{
-		return v * p;
-	};
-
 	// 
 	// Operator/
 	// 
@@ -521,6 +515,14 @@ public:
 
 public:
 	T x, y;
+};
+
+// for vec * float
+// NOTE: has to be outside
+template <typename T>
+constexpr inline vector_2d<T> operator*(float p, const vector_2d<T>& v)
+{
+	return v * p;
 };
 
 //
@@ -858,12 +860,6 @@ public:
 		return vector_3d(x * f, y * f, z * f);
 	}
 
-	// for vec * float
-	constexpr inline auto operator*(float fl, const vector_3d& v)
-	{
-		return v * fl;
-	};
-
 	// 
 	// Operator/
 	// 
@@ -1033,7 +1029,7 @@ public:
 	}
 
 	// returns new instance of Vector2D
-	constexpr inline Vector2D AsVector2D() const
+	constexpr inline vector_2d<T> AsVector2D() const
 	{
 		return { x, y };
 	}
@@ -1115,6 +1111,14 @@ public:
 
 public:
 	T x, y, z;
+};
+
+// for vec * float
+// NOTE: has to be outside
+template <typename T>
+constexpr inline vector_3d<T> operator*(float p, const vector_3d<T>& v)
+{
+	return v * p;
 };
 
 } // namespace detail
