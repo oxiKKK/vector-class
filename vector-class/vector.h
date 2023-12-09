@@ -13,9 +13,16 @@ namespace detail
 {
 
 //
+// type specification
+//
+
+template<typename T>
+concept VectorType = std::is_integral_v<T> || std::is_floating_point_v<T>;
+
+//
 // two dimensional vector class with helpers
 //
-template <typename T>
+template <VectorType T>
 class vector_2d
 {
 public:
@@ -519,7 +526,7 @@ public:
 
 // for vec * float
 // NOTE: has to be outside
-template <typename T>
+template <VectorType T>
 constexpr inline vector_2d<T> operator*(float p, const vector_2d<T>& v)
 {
 	return v * p;
@@ -528,7 +535,7 @@ constexpr inline vector_2d<T> operator*(float p, const vector_2d<T>& v)
 //
 // three dimensional vector class with helpers
 //
-template <typename T>
+template <VectorType T>
 class vector_3d
 {
 public:
@@ -1108,14 +1115,13 @@ public:
 		return flLen;
 	}
 
-
 public:
 	T x, y, z;
 };
 
 // for vec * float
 // NOTE: has to be outside
-template <typename T>
+template <VectorType T>
 constexpr inline vector_3d<T> operator*(float p, const vector_3d<T>& v)
 {
 	return v * p;
@@ -1127,13 +1133,10 @@ constexpr inline vector_3d<T> operator*(float p, const vector_3d<T>& v)
 // type declarations
 //
 
-template<typename T>
-concept VectorType = std::is_integral_v<T> || std::is_floating_point_v<T>;
+using Vector2D = detail::vector_2d<float>;
+using Vector = detail::vector_3d<float>;
 
-template<VectorType T = float>
-using Vector2D = detail::vector_2d<T>;
-
-template<VectorType T = float>
-using Vector = detail::vector_3d<T>;
+template<typename T> using Vector2DT = detail::vector_2d<T>;
+template<typename T> using VectorT = detail::vector_3d<T>;
 
 #endif // VECTOR_CLASS_H
